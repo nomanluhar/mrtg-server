@@ -3,7 +3,7 @@
     "host": "localhost",
     "port": 3306,
     "username": "root",
-    "password": "root",
+    "password": "iMedia@009",
     "database": "MRTG",
     "entities": ["src/entity/*.ts"],
     "logging": true,
