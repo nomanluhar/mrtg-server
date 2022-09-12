@@ -16,10 +16,9 @@ export const login = async (req: Request, res: Response) => {
   if (!user) {
     res.status(400).send({ message: "Invalid email or password" });
   } else {
-    const result = await bcrypt.hash(password, user.password);
-    // console.log(user)
+    const result = await bcrypt.compare(password, user.password);
     if (result) {
-      res.status(200).send({ message: "Login success", type: user.user_type });
+      res.status(200).send({ message: "Login success", type: user.user_type,user });
     } else {
       res.status(400).send({ message: "Invalid email or password" });
     }
@@ -41,9 +40,11 @@ export const getAllCustomer = async (req: Request, res: Response) => {
 export const getSingleCustomer = async (req: Request, res: Response) => {
   try {
     const userRepository = getRepository(Users);
+    const mrtgRepository = getRepository(Mrtg_info);
     const id = req.params.id;
     const customer = await userRepository.findOne(id);
-    res.status(200).send({ message: "Customers get", customer });
+    const mrtgDetails = await mrtgRepository.find({ customer_id: Number(id) });
+    res.status(200).send({ message: "Customer get", customer, mrtgDetails });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
@@ -72,11 +73,11 @@ export const addCustomer = async (req: Request, res: Response) => {
 
         await mrtgRepository.save(addMrtg);
       });
-    }
+    };
     res.status(200).send({ message: "Customer added", addCustomer });
   } catch (error) {
     res.status(400).send({ message: error.message });
-  }
+  };
 };
 
 export const editCustomer = async (req: Request, res: Response) => {
